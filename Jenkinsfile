@@ -29,6 +29,10 @@ pipeline {
             }
             steps {
                 sh '''
+                    ls -al
+                    node --version
+                    npm --version
+                    npm ci
                     test -f build/index.html
                     npm test
                 '''
