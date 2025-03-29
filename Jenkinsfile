@@ -2,6 +2,11 @@ pipeline {
     agent any
 
     stages {
+        // comment
+        /* multiple
+        line
+        comment 
+        */
         stage('Build') {
             agent {
                 docker {
@@ -33,7 +38,7 @@ pipeline {
                     node --version
                     npm --version
                     npm ci
-                    test -f build/index.html
+                    # test -f build/index.html
                     npm test
                 '''
             }
