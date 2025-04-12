@@ -2,7 +2,11 @@ pipeline {
     agent any
 
     stages {
-
+        // comment
+        /* multiple
+        line
+        comment 
+        */
         stage('Build') {
             agent {
                 docker {
@@ -12,29 +16,28 @@ pipeline {
             }
             steps {
                 sh '''
-                    ls -la
+                    ls -al
                     node --version
                     npm --version
                     npm ci
                     npm run build
-                    ls -la
+                    ls -al
                 '''
             }
         }
 
-        stage('Tests') {
+        stage ('run tests') {
             parallel {
-                stage('Unit tests') {
+                stage ('Unit tests') {
                     agent {
                         docker {
                             image 'node:18-alpine'
                             reuseNode true
                         }
                     }
-
                     steps {
                         sh '''
-                            #test -f build/index.html
+                            # test -f build/index.html
                             npm test
                         '''
                     }
@@ -44,46 +47,29 @@ pipeline {
                         }
                     }
                 }
-
-                stage('E2E') {
+                stage ('e2e') {
                     agent {
                         docker {
-                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            image 'mcr.microsoft.com/playwright:v1.51.1-noble'
                             reuseNode true
                         }
                     }
-
                     steps {
                         sh '''
                             npm install serve
                             node_modules/.bin/serve -s build &
                             sleep 10
-                            npx playwright test  --reporter=html
-                        '''
+                            npx playwright test --reporter=html
+                        ''' 
                     }
-
                     post {
                         always {
-                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
                 }
             }
         }
-
-        stage('Deploy') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    npm install netlify-cli
-                    node_modules/.bin/netlify --version
-                '''
-            }
-        }
     }
+
 }
