@@ -92,6 +92,13 @@ pipeline {
                 '''
             }
         }
+        stage('Approval') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    input message: 'To build or not to build?', ok: 'Yes, I am sure to d.'
+                }
+            }
+        }
         stage('Deploy Prod') {
             agent {
                 docker {
