@@ -92,5 +92,28 @@ pipeline {
                 '''
             }
         }
+        stage ('Prod e2e') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.51.1-noble'
+                    reuseNode true
+                }
+            }
+
+            environment {
+                CI_ENVIRONMENT_URL = 'https://eclectic-syrniki-b39953.netlify.app'
+            }
+
+            steps {
+                sh '''
+                    npx playwright test --reporter=html
+                ''' 
+            }
+            post {
+                always {
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Prod Report', reportTitles: '', useWrapperFileDirectly: true])
+                }
+            }
+        }
     }
 }
