@@ -95,7 +95,7 @@ pipeline {
         }
         stage('Approval') {
             steps {
-                timeout(time: 15, unit: 'MINUNTES') {
+                timeout(time: 15, unit: 'MINUTES') {
                     input message: 'To build or not to build?', ok: 'Yes, I am sure to d.'
                 }
             }
