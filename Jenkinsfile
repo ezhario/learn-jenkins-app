@@ -88,13 +88,13 @@ pipeline {
                     node_modules/.bin/netlify --version
                     echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
                     node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build
+                    node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
                 '''
             }
         }
         stage('Approval') {
             steps {
-                timeout(time: 1, unit: 'HOURS') {
+                timeout(time: 15, unit: 'MINUNTES') {
                     input message: 'To build or not to build?', ok: 'Yes, I am sure to d.'
                 }
             }
