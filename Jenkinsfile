@@ -128,9 +128,12 @@ pipeline {
         stage('Deploy Prod') {
             agent {
                 docker {
-                    image 'node:18-alpine'
+                    image 'mcr.microsoft.com/playwright:v1.51.1-noble'
                     reuseNode true
                 }
+            }
+            environment {
+                CI_ENVIRONMENT_URL = 'https://eclectic-syrniki-b39953.netlify.app'
             }
             steps {
                 sh '''
@@ -139,25 +142,8 @@ pipeline {
                     echo "Deploying Site ID: $NETLIFY_SITE_ID"
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir=build --prod
-                '''
-            }
-        }
-        stage ('Prod e2e') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/playwright:v1.51.1-noble'
-                    reuseNode true
-                }
-            }
-
-            environment {
-                CI_ENVIRONMENT_URL = 'https://eclectic-syrniki-b39953.netlify.app'
-            }
-
-            steps {
-                sh '''
                     npx playwright test --reporter=html
-                ''' 
+                '''
             }
             post {
                 always {
