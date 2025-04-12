@@ -4,14 +4,10 @@ pipeline {
     environment {
         NETLIFY_SITE_ID = '94e73fe9-abb9-46a7-b343-7f3293e69269'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        REACT_APP_VERSION = '1.2.3'
     }
 
     stages {
-        // comment
-        /* multiple
-        line
-        comment 
-        */
         stage('Build') {
             agent {
                 docker {
@@ -101,13 +97,6 @@ pipeline {
             post {
                 always {
                     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Prod Report', reportTitles: '', useWrapperFileDirectly: true])
-                }
-            }
-        }
-        stage('Approval') {
-            steps {
-                timeout(time: 15, unit: 'MINUTES') {
-                    input message: 'To build or not to build?', ok: 'Yes, I am sure to d.'
                 }
             }
         }
