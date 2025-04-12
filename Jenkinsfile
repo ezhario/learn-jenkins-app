@@ -70,6 +70,21 @@ pipeline {
                 }
             }
         }
+        stage('Deploy') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    npm install netify-cli
+                    node_modules/.bin/netify-cli --version
+                '''
+            }
+        }
+        
     }
 
 }
